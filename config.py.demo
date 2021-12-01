@@ -1,0 +1,13 @@
+# 数据库配置
+CLICKHOUSE_HOST = '127.0.0.1'
+CLICKHOUSE_PORT = '9000'
+CLICKHOUSE_USER = 'default'
+CLICKHOUSE_PWD = 'default_pwd'
+DATABASE = 'asoulcnki_click'
+
+# oauth配置
+OAUTH_URL = "http://oauth.example.com/verify/"
+
+# flask配置
+FLASK_HOST = "localhost" # 监听地址
+FLASK_PORT = "9050" # 监听端口
