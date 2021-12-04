@@ -11,6 +11,7 @@ ch_client = Client(
 
 sql_total_dynamicCount = f"""select count(*) as total from {DATABASE}.user_dynamic;"""
 sql_total_replyCount = f"""select count(rpid) as total from {DATABASE}.reply;"""
+sql_total_charCount = f"""select sum(lengthUTF8(replaceRegexpAll(content, '\[\\S*]', '*'))) as total from { DATABASE }.reply;"""
 sql_total_danmuCount = f""""""
 
 
@@ -24,19 +25,21 @@ def query_one(sql):
 
 total_dynamicCount = query_one(sql_total_dynamicCount)[0]
 total_replyCount = query_one(sql_total_replyCount)[0]
+total_charCount = query_one(sql_total_charCount)[0]
 total_danmuCount = query_one(sql_total_danmuCount)[0]
 
 total = {
-    "dynamicCount":total_dynamicCount,
-    "replyCount":total_replyCount,
-    "danmuCount":total_danmuCount
+    "dynamicCount": total_dynamicCount,
+    "replyCount": total_replyCount,
+    "total_charCount": total_charCount,
+    "danmuCount": total_danmuCount
 }
 
 
 def get_personal_data(mid):
     data = {
-        "total":total,
-        "first":get_first(mid),
+        "total": total,
+        "first": get_first(mid),
     }
     return data
 
@@ -49,7 +52,7 @@ def get_first(mid):
     sql_first_dynamicid = f"""select dynamic_id from { DATABASE }.first where mid ={ mid }"""
     first_dynamicid = query_one(sql_first_dynamicid)[0]
     return {
-        "first_replytime" : first_replytime,
-        "first_content" : first_content,
-        "first_dynamicid" : first_dynamicid
+        "first_replytime": first_replytime,
+        "first_content": first_content,
+        "first_dynamicid": first_dynamicid
     }
