@@ -1,10 +1,20 @@
-from clickhouse_driver import Client
+from clickhouse_driver import Client, dbapi
 from config import CLICKHOUSE_USER, CLICKHOUSE_PWD, CLICKHOUSE_HOST, CLICKHOUSE_PORT
 from config import DATABASE
+from dbutils.pooled_db import PooledDB
 
-ch_client = Client(
-    host=CLICKHOUSE_HOST, 
-    port=CLICKHOUSE_PORT, 
+# ch_client = Client(
+#     host=CLICKHOUSE_HOST,
+#     port=CLICKHOUSE_PORT,
+#     user=CLICKHOUSE_USER,
+#     password=CLICKHOUSE_PWD
+# )
+
+# clickhouse连接池，目前参数均为默认
+ch_client_pool = PooledDB(
+    creator=dbapi,
+    host=CLICKHOUSE_HOST,
+    port=CLICKHOUSE_PORT,
     user=CLICKHOUSE_USER,
     password=CLICKHOUSE_PWD
 )
@@ -17,8 +27,13 @@ sql_total_danmuCount = f""""""
 
 def query_one(sql):
     try:
-        res = ch_client.execute(sql)
-        return res[0]
+        ch_client = ch_client_pool.connection()
+        cur = ch_client.cursor()
+        cur.execute(sql)
+        res = cur.fetchone()
+        cur.close()
+        ch_client.close()
+        return res
     except Exception as e:
         return (None, )
 
