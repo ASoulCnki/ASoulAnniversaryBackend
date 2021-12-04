@@ -10,9 +10,10 @@ from dbutils.pooled_db import PooledDB
 #     password=CLICKHOUSE_PWD
 # )
 
-# clickhouse连接池，目前参数均为默认
+# 使用clickhouse连接池，blocking=True设置为阻塞模式
 ch_client_pool = PooledDB(
     creator=dbapi,
+    blocking=True,
     host=CLICKHOUSE_HOST,
     port=CLICKHOUSE_PORT,
     user=CLICKHOUSE_USER,
@@ -25,29 +26,46 @@ sql_total_charCount = f"""select sum(lengthUTF8(replaceRegexpAll(content, '\[\\S
 sql_total_danmuCount = f""""""
 
 
-def query_one(sql):
-    try:
-        ch_client = ch_client_pool.connection()
-        cur = ch_client.cursor()
-        cur.execute(sql)
-        res = cur.fetchone()
-        cur.close()
-        ch_client.close()
+# def query_one(sql, num):
+#     try:
+#         ch_client = ch_client_pool.connection()
+#         cur = ch_client.cursor()
+#         cur.execute(sql)
+#         res = cur.fetchone()
+#         cur.close()
+#         ch_client.close()
+#         if res is not None:
+#             return res
+#         else:
+#             return [None] * num
+#     except Exception as e:
+#         return [None] * num
+
+
+# 没有使用try catch块，编写代码时会跳过一些程序中的错误，不利于排查bug
+def query_one(sql, num):
+    ch_client = ch_client_pool.connection()
+    cur = ch_client.cursor()
+    cur.execute(sql)
+    res = cur.fetchone()
+    cur.close()
+    ch_client.close()
+    if res is not None:
         return res
-    except Exception as e:
-        return (None, )
+    else:
+        return [None] * num
 
 
-total_dynamicCount = query_one(sql_total_dynamicCount)[0]
-total_replyCount = query_one(sql_total_replyCount)[0]
-total_charCount = query_one(sql_total_charCount)[0]
-total_danmuCount = query_one(sql_total_danmuCount)[0]
+total_dynamicCount = query_one(sql_total_dynamicCount, 1)[0]
+total_replyCount = query_one(sql_total_replyCount, 1)[0]
+total_charCount = query_one(sql_total_charCount, 1)[0]
+# total_danmuCount = query_one(sql_total_danmuCount, 1)[0]
 
 total = {
     "dynamicCount": total_dynamicCount,
     "replyCount": total_replyCount,
     "total_charCount": total_charCount,
-    "danmuCount": total_danmuCount
+    # "danmuCount": total_danmuCount  # 待实现
 }
 
 
@@ -55,19 +73,50 @@ def get_personal_data(mid):
     data = {
         "total": total,
         "first": get_first(mid),
+        "comment_rank": get_comment_rank(mid),
+        "comment_member_rank": get_comment_member_rank(mid),
     }
     return data
 
 
 def get_first(mid):
-    sql_first_replytime = f"""select first_reply_time from { DATABASE }.first where mid ={ mid }"""
-    first_replytime = query_one(sql_first_replytime)[0]
-    sql_first_content = f"""select content from { DATABASE }.first where mid ={ mid }"""
-    first_content = query_one(sql_first_content)[0]
-    sql_first_dynamicid = f"""select dynamic_id from { DATABASE }.first where mid ={ mid }"""
-    first_dynamicid = query_one(sql_first_dynamicid)[0]
+    table = "first"
+    elements = "first_reply_time, content, dynamic_id"
+    ele_num = 3
+
+    sql = f"""select {elements} from {DATABASE}.{table} where mid ={mid}"""
+    ans = query_one(sql, ele_num)
     return {
-        "first_replytime": first_replytime,
-        "first_content": first_content,
-        "first_dynamicid": first_dynamicid
+        "first_replytime": ans[0],
+        "first_content": ans[1],
+        "first_dynamicid": ans[2]
+    }
+
+
+def get_comment_rank(mid):
+    table = "comment_rank"
+    elements = "total_reply_num, total_dynamic_num, rank"
+    ele_num = 3
+
+    sql = f"""select { elements } from { DATABASE }.{ table } where mid ={ mid }"""
+    ans = query_one(sql, ele_num)
+    return {
+        "total_reply_num": ans[0],
+        "total_dynamic_num": ans[1],
+        "rank": ans[2]
+    }
+
+
+def get_comment_member_rank(mid):
+    table = "comment_member_rank"
+    elements = "uid, member, total, rank"
+    ele_num = 4
+
+    sql = f"""select {elements} from {DATABASE}.{table} where mid ={mid}"""
+    ans = query_one(sql, ele_num)
+    return {
+        "uid": ans[0],
+        "member": ans[1],
+        "total": ans[2],
+        "rank": ans[3]
     }
