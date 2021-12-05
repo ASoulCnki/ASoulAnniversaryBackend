@@ -75,6 +75,7 @@ def get_personal_data(mid):
         "first": get_first(mid),
         "comment_rank": get_comment_rank(mid),
         "comment_member_rank": get_comment_member_rank(mid),
+        "comment_date": get_comment_date(mid)
     }
     return data
 
@@ -119,4 +120,19 @@ def get_comment_member_rank(mid):
         "member": ans[1],
         "total": ans[2],
         "rank": ans[3]
+    }
+
+
+def get_comment_date(mid):
+    table = "comment_date"
+    elements = "oid, date, content, max_reply_num"
+    ele_num = 4
+
+    sql = f"""select {elements} from {DATABASE}.{table} where mid ={mid}"""
+    ans = query_one(sql, ele_num)
+    return {
+        "oid": ans[0],
+        "date": ans[1],
+        "content": ans[2],
+        "max_reply_num": ans[3]
     }
