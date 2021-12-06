@@ -5,34 +5,55 @@
 	"code":0,
 	"message":"",
 	"data":{
-		"total":{
-			"dynamicCount":null,
-			"replyCount":null,
-			"total_charCount":null,
-			"danmuCount":null
+		"total": {
+			"dynamicNumber": 1,  对应 comment_rank -> total_dynamic_num
+			"sendNumber": 1,  对应 comment_rank -> total_reply_num
+			"rank": 1,  对应 comment_rank -> rank
+			"maxDynamicOwner": "嘉然今天吃什么",  对应 comment_member_rank -> member
+			"maxSendNumber": 1,  对应 comment_member_rank -> total
+			"maxOwnerRank": 1   对应 comment_member_rank -> rank
 		},
-		"first":{
-			"first_replytime":null,
-			"first_content":null,
-			"first_dynamicid":null
+		"first_send": {
+			"time": 1637205720285,  对应 first -> first_reply_time
+			"dynamicOwner": "嘉然今天吃什么",  对应 first -> dynamic_id
+			"rank": 5.5,  字段缺失
+			"content": "文本",  对应 first -> content
 		},
-		"comment_rank":{
-			"total_reply_num":null,
-			"total_dynamic_num":null,
-			"rank":null
+		"max_like": {
+			"time": 1637205720285,  字段缺失
+			"dynamicOwner": "嘉然今天吃什么",  字段缺失
+			"rank": 5.5,  对应 max_like -> rank
+			"content": "文本",  对应 max_like -> content
+			"likeNum": 123,  对应 max_like -> max_likes
 		},
-		"comment_member_rank":{
-			"uid":null,
-			"member":null,
-			"total":null,
-			"rank":null
+		"max_used": {
+			"time": 1637205720285,  字段缺失
+			"dynamicOwner": "嘉然今天吃什么",  字段缺失
+			"rank": 5.5,  字段缺失
+			"content": "文本",  对应 max_used -> content
+			"usedNum": 123,  对应 max_used -> reference_count
 		},
-		"comment_date":{
-        	"oid": null,
-        	"date": null,
-        	"content": null,
-        	"max_reply_num": null
-    		}
+		"stolen": {
+			"time": 1637205720285,
+			"dynamicOwner": "嘉然今天吃什么",
+			"rank": 5.5,
+			"content": "文本",
+			"stolenNum": 123,
+		},
+		"max_send_one_day": {
+			"time": 1637205720285,
+			"dynamicOwner": "嘉然今天吃什么",
+			"rank": 5.5,
+			"content": "文本",
+			"percent": 1.5,
+			"maxSendTime": 100,
+			"timeRange": "早晨",
+			"sendNum": 123,
+		},
+		"text": {
+			"length": 114514,
+			"book": "莎士比亚全集"
+		},
 	}
 }
 ```
@@ -81,6 +102,12 @@
 "max_reply_num":max_reply_num	评论数
 ```
 
-## total_likes_rank表
+## max_like表
 
-。。。。
+统计每个用户点赞数最多的评论，并根据最大点赞数从大到小排名
+
+## reference表
+
+统计每个用户引用数最多的评论
+
+## 

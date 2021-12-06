@@ -61,7 +61,7 @@ total_replyCount = query_one(sql_total_replyCount, 1)[0]
 total_charCount = query_one(sql_total_charCount, 1)[0]
 # total_danmuCount = query_one(sql_total_danmuCount, 1)[0]
 
-total = {
+total = { # 这个total计算的是所有au的整体数据，与字段约定不一样
     "dynamicCount": total_dynamicCount,
     "replyCount": total_replyCount,
     "total_charCount": total_charCount,
@@ -71,13 +71,38 @@ total = {
 
 def get_personal_data(mid):
     data = {
-        "total": total,
-        "first": get_first(mid),
-        "comment_rank": get_comment_rank(mid),
-        "comment_member_rank": get_comment_member_rank(mid),
-        "comment_date": get_comment_date(mid)
+        # "total": total, # 这个total计算的是所有au的整体数据，与字段约定不一样，不知道把数据放到哪里，就先注释掉吧
+        "total": get_total(mid),
+        "first_send": get_first(mid),  # 已更新
+        # "comment_date": get_comment_date(mid),  # 待更新
+        "max_like": get_max_like(mid),
+        "max_used": get_max_used(mid),
     }
     return data
+
+
+def get_total(mid):
+    # 先读取comment_rank表的内容
+    table = "comment_rank"
+    elements = "total_reply_num, total_dynamic_num, rank"
+    ele_num = 3
+    sql = f"""select {elements} from {DATABASE}.{table} where mid ={mid}"""
+    ans1 = query_one(sql, ele_num)
+
+    # 再读取comment_member_rank表的内容
+    table = "comment_member_rank"
+    elements = "member, total, rank"
+    ele_num = 3
+    sql = f"""select {elements} from {DATABASE}.{table} where mid ={mid}"""
+    ans2 = query_one(sql, ele_num)
+    return {
+        "dynamicNumber": ans1[1],
+        "sendNumber": ans1[0],
+        "rank": ans1[2],
+        "maxDynamicOwner": ans2[0],
+        "maxSendNumber": ans2[1],
+        "maxOwnerRank": ans2[2]
+    }
 
 
 def get_first(mid):
@@ -88,38 +113,10 @@ def get_first(mid):
     sql = f"""select {elements} from {DATABASE}.{table} where mid ={mid}"""
     ans = query_one(sql, ele_num)
     return {
-        "first_replytime": ans[0],
-        "first_content": ans[1],
-        "first_dynamicid": ans[2]
-    }
-
-
-def get_comment_rank(mid):
-    table = "comment_rank"
-    elements = "total_reply_num, total_dynamic_num, rank"
-    ele_num = 3
-
-    sql = f"""select { elements } from { DATABASE }.{ table } where mid ={ mid }"""
-    ans = query_one(sql, ele_num)
-    return {
-        "total_reply_num": ans[0],
-        "total_dynamic_num": ans[1],
-        "rank": ans[2]
-    }
-
-
-def get_comment_member_rank(mid):
-    table = "comment_member_rank"
-    elements = "uid, member, total, rank"
-    ele_num = 4
-
-    sql = f"""select {elements} from {DATABASE}.{table} where mid ={mid}"""
-    ans = query_one(sql, ele_num)
-    return {
-        "uid": ans[0],
-        "member": ans[1],
-        "total": ans[2],
-        "rank": ans[3]
+        "time": ans[0],
+        "content": ans[1],
+        "dynamicOwner": ans[2]
+    #     无 rank 字段
     }
 
 
@@ -135,4 +132,36 @@ def get_comment_date(mid):
         "date": ans[1],
         "content": ans[2],
         "max_reply_num": ans[3]
+    }
+
+
+def get_max_like(mid):
+    table = "max_like"
+    elements = "content, max_likes, rank" # 疑似缺少统计了评论时间和所属成员姓名
+    ele_num = 3
+
+    sql = f"""select {elements} from {DATABASE}.{table} where mid ={mid}"""
+    ans = query_one(sql, ele_num)
+    return {
+        # "time": ans[],  # 缺少评论时间的字段
+        # "dynamicOwner": ans[],  # 缺少所属成员姓名的字段
+        "rank": ans[2],
+        "content": ans[0],
+        "likeNum": ans[1]
+    }
+
+
+def get_max_used(mid):
+    table = "reference"
+    elements = "content, reference_count"  # 疑似缺少字段
+    ele_num = 2
+
+    sql = f"""select {elements} from {DATABASE}.{table} where mid ={mid}"""
+    ans = query_one(sql, ele_num)
+    return {
+        # "time": ans[],  # 缺少评论时间的字段
+        # "dynamicOwner": ans[],  # 缺少所属成员姓名的字段
+        # "rank": ans[2],
+        "content": ans[0],
+        "usedNum": ans[1]
     }
