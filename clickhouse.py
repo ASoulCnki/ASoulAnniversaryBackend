@@ -1,14 +1,8 @@
-from clickhouse_driver import Client, dbapi
+from clickhouse_driver import dbapi
 from config import CLICKHOUSE_USER, CLICKHOUSE_PWD, CLICKHOUSE_HOST, CLICKHOUSE_PORT
 from config import DATABASE
 from dbutils.pooled_db import PooledDB
 
-# ch_client = Client(
-#     host=CLICKHOUSE_HOST,
-#     port=CLICKHOUSE_PORT,
-#     user=CLICKHOUSE_USER,
-#     password=CLICKHOUSE_PWD
-# )
 
 # 使用clickhouse连接池，blocking=True设置为阻塞模式
 ch_client_pool = PooledDB(
@@ -25,21 +19,6 @@ sql_total_replyCount = f"""select count(rpid) as total from {DATABASE}.reply;"""
 sql_total_charCount = f"""select sum(lengthUTF8(replaceRegexpAll(content, '\[\\S*]', '*'))) as total from { DATABASE }.reply;"""
 sql_total_danmuCount = f""""""
 
-
-# def query_one(sql, num):
-#     try:
-#         ch_client = ch_client_pool.connection()
-#         cur = ch_client.cursor()
-#         cur.execute(sql)
-#         res = cur.fetchone()
-#         cur.close()
-#         ch_client.close()
-#         if res is not None:
-#             return res
-#         else:
-#             return [None] * num
-#     except Exception as e:
-#         return [None] * num
 
 
 # 没有使用try catch块，编写代码时会跳过一些程序中的错误，不利于排查bug
@@ -71,7 +50,6 @@ total = { # 这个total计算的是所有au的整体数据，与字段约定不�
 
 def get_personal_data(mid):
     data = {
-        # "total": total, # 这个total计算的是所有au的整体数据，与字段约定不一样，不知道把数据放到哪里，就先注释掉吧
         "total": get_total(mid),
         "first_send": get_first(mid),  # 已更新
         # "comment_date": get_comment_date(mid),  # 待更新
