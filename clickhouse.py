@@ -20,7 +20,6 @@ sql_total_charCount = f"""select sum(lengthUTF8(replaceRegexpAll(content, '\[\\S
 sql_total_danmuCount = f""""""
 
 
-
 # 没有使用try catch块，编写代码时会跳过一些程序中的错误，不利于排查bug
 def query_one(sql, num):
     ch_client = ch_client_pool.connection()
@@ -51,10 +50,10 @@ total = { # 这个total计算的是所有au的整体数据，与字段约定不�
 def get_personal_data(mid):
     data = {
         "total": get_total(mid),
-        "first_send": get_first(mid),  # 已更新
-        # "comment_date": get_comment_date(mid),  # 待更新
+        "first_send": get_first(mid),  # 待更新
         "max_like": get_max_like(mid),
         "max_used": get_max_used(mid),
+        "max_send_one_day": get_send_one_day(mid),  # 已更新
     }
     return data
 
@@ -93,29 +92,36 @@ def get_first(mid):
     return {
         "time": ans[0],
         "content": ans[1],
-        "dynamicOwner": ans[2]
-    #     无 rank 字段
+        "dynamicOwner": ans[2]  # 这里的dynamic_id与dynamicOwner并无对应关系
     }
 
 
-def get_comment_date(mid):
+def get_send_one_day(mid):
+    # 先读取comment_date表的内容
     table = "comment_date"
-    elements = "oid, date, content, max_reply_num"
-    ele_num = 4
-
+    elements = "date, content, max_reply_num"
+    ele_num = 3
     sql = f"""select {elements} from {DATABASE}.{table} where mid ={mid}"""
-    ans = query_one(sql, ele_num)
+    ans1 = query_one(sql, ele_num)
+
+    # 再读取comment_hour表的内容
+    table = "comment_hour"
+    elements = "reply_hour, reply_num"
+    ele_num = 2
+    sql = f"""select {elements} from {DATABASE}.{table} where mid ={mid}"""
+    ans2 = query_one(sql, ele_num)
     return {
-        "oid": ans[0],
-        "date": ans[1],
-        "content": ans[2],
-        "max_reply_num": ans[3]
+        "time": ans1[0],
+        "content": ans1[1],
+        "maxSendTime": ans1[2],
+        "timeRange": ans2[0],
+        "sendNum": ans2[1]
     }
 
 
 def get_max_like(mid):
     table = "max_like"
-    elements = "content, max_likes, rank" # 疑似缺少统计了评论时间和所属成员姓名
+    elements = "content, max_likes, rank"  # 疑似缺少统计了评论时间和所属成员姓名
     ele_num = 3
 
     sql = f"""select {elements} from {DATABASE}.{table} where mid ={mid}"""
