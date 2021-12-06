@@ -15,8 +15,8 @@
 		},
 		"first_send": {
 			"time": 1637205720285,  对应 first -> first_reply_time
-			"dynamicOwner": "嘉然今天吃什么",  对应 first -> dynamic_id
-			"rank": 5.5,  字段缺失
+			"dynamicOwner": "嘉然今天吃什么",  字段缺失
+			"rank": 5.5,  这个字段不要了👿
 			"content": "文本",  对应 first -> content
 		},
 		"max_like": {
@@ -33,7 +33,7 @@
 			"content": "文本",  对应 max_used -> content
 			"usedNum": 123,  对应 max_used -> reference_count
 		},
-		"stolen": {
+		"stolen": { 整个"stolen"疑似摆了😤
 			"time": 1637205720285,
 			"dynamicOwner": "嘉然今天吃什么",
 			"rank": 5.5,
@@ -41,14 +41,11 @@
 			"stolenNum": 123,
 		},
 		"max_send_one_day": {
-			"time": 1637205720285,
-			"dynamicOwner": "嘉然今天吃什么",
-			"rank": 5.5,
-			"content": "文本",
-			"percent": 1.5,
-			"maxSendTime": 100,
-			"timeRange": "早晨",
-			"sendNum": 123,
+			"time": 1637205720285,  对应 comment_date -> date
+			"content": "文本",  对应 comment_date -> content
+			"maxSendTime": 100,  对应 comment_date -> max_reply_num
+			"timeRange": "早晨", 对应 comment_hour -> reply_hour,但是这里传的是时间，交给前端转为字符串😤
+			"sendNum": 123,  对应 comment_hour -> reply_num
 		},
 		"text": {
 			"length": 114514,
@@ -110,4 +107,6 @@
 
 统计每个用户引用数最多的评论
 
-## 
+## comment_hour表
+
+统计每个用户发送评论所在的小时
