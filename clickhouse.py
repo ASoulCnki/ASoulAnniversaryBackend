@@ -16,6 +16,7 @@ ch_client_pool = PooledDB(
     password=CLICKHOUSE_PWD
 )
 
+
 # 没有使用try catch块，编写代码时会跳过一些程序中的错误，不利于排查bug
 def query_one(sql, num):
     ch_client = ch_client_pool.connection()
