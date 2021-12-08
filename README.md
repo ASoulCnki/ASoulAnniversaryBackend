@@ -13,7 +13,7 @@
     # reply_first存放个人第一次评论相关 -> reply_first表
     "reply_first":{
       "time": 1638862558,       # 个人第一次评论时间戳
-      "content": "以后国v第一", # 个人第一次评论内容
+      "content": "以后国v第一",  # 个人第一次评论内容
       "uid": 672328094          # 个人第一次评论成员uid
     },
     # reply_total存放个人评论总览 -> reply_total表
@@ -38,7 +38,7 @@
     # reply_max_like存放个人点赞数最高评论相关 -> reply_max_like表
     "reply_max_like": {
       "time": 1638862558,       # 个人点赞数最高评论时间戳
-      "content": "以后国v第一", # 个人点赞数最高评论内容
+      "content": "以后国v第一",  # 个人点赞数最高评论内容
       "uid": 672328094,         # 个人点赞数最高评论成员uid
       "likeNumber": 304,        # 个人点赞数最高评论获赞数
       "rank": 0.2346667         # 个人点赞数最高评论获赞数正向排名(%)
@@ -46,15 +46,15 @@
     # reply_max_used存放个人被引用数最高评论相关 -> reply_max_used表
     "reply_max_used": {
       "time": 1638862558,       # 个人被引用数最高评论时间戳
-      "content": "以后国v第一", # 个人被引用数最高评论内容
+      "content": "以后国v第一",  # 个人被引用数最高评论内容
       "uid": 672328094,         # 个人被引用数最高评论成员uid
       "usedNumber": 304,        # 个人被引用数最高评论引用数
       "rank": 0.2346667         # 个人被引用数最高评论引用数正向排名(%)
     },
     # reply_max_send_one_day存放个人发送评论最多日期相关 -> reply_max_send_one_day表
     "reply_max_send_one_day": {
-      "date": "2021/12/01",     # 个人发送评论最多日期
-      "content": "以后国v第一", # 个人发送评论最多日期其中一条内容
+      "date": "2021-12-01",     # 个人发送评论最多日期
+      "content": "以后国v第一",  # 个人发送评论最多日期其中一条内容
       "maxSendNumber": 304,     # 个人发送评论最多日期评论数
     },
     # reply_prefer_time存放个人偏爱评论时间相关 -> reply_prefer_time表
