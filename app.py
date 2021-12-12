@@ -16,7 +16,7 @@ def wrap_response(data, code=0, message=""):
     }
     return result
 
-@app.route('/AsoulAnniversary/<uid>', methods=["GET"])
+@app.route('/AsoulAnniversary/<int:uid>', methods=["GET"])
 def asoul_anniversary(uid):
     return jsonify(wrap_response(get_personal_data(uid))), 200
 
