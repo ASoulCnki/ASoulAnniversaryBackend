@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 
-from clickhouse import get_personal_data
+from mysql import get_personal_data
 
 from config import FLASK_PORT, FLASK_HOST
 
