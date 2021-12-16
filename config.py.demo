@@ -1,9 +1,9 @@
 # 数据库配置
-CLICKHOUSE_HOST = '127.0.0.1'
-CLICKHOUSE_PORT = '9000'
-CLICKHOUSE_USER = 'default'
-CLICKHOUSE_PWD = 'default_pwd'
-DATABASE = 'asoulcnki_click'
+DATABASE_HOST = '127.0.0.1'
+DATABASE_PORT = 3306
+DATABASE_USER = 'default'
+DATABASE_PWD = 'default_pwd'
+DATABASE = 'database'
 
 # oauth配置
 OAUTH_URL = "http://oauth.example.com/verify/"
