@@ -2,3 +2,4 @@ clickhouse_driver==0.2.2
 requests==2.26.0
 Flask==1.0.2
 dbutils==3.0.0
+mysqlclient==2.1.0
