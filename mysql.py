@@ -59,11 +59,11 @@ def query_data_by_mid(table, elements, ele_num, mid):
 
 # 获取字段all数据
 sql_total_replyCount = f"""select count(rpid) as total from asoulcnki.reply;"""
-# sql_total_danmuCount = f""""""
+sql_total_danmuCount = f"""select count(mid) as total from {DATABASE}.danmaku_total;"""
 sql_total_dynamicCount = f"""select count(*) as total from asoulcnki.user_dynamic;"""
 all_data = {
     "replyCount": query_one(sql_total_replyCount, 1)[0], 
-    "danmuCount": None, 
+    "danmuCount": query_one(sql_total_danmuCount, 1)[0], 
     "dynamicCount": query_one(sql_total_dynamicCount, 1)[0]
 }
 
