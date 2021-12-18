@@ -193,6 +193,110 @@ def get_reply_prefer_time(mid):
         "maxHour": reply_time[0][0] if index<2 else reply_time[-1][0]
     }
 
+fansMap = {
+    672328094:"嘉心糖",
+    672346917:"顶晚人",
+    703007996:"一个魂",
+    672353429:"贝极星",
+    672342685:"乃淇琳",
+    351609538:"皇珈骑士"
+}
+
+@Fail2None
+def get_medal_fans(danmu_total):
+    global fansMap
+    memberUid = danmu_total.get("memberUid")
+    return {"name":"铁血"+fansMap.get(memberUid), "level":6}
+
+@Fail2None
+def get_medal_reply_count(reply_total):
+    reply_count = reply_total.get("replyNumber")
+    ret = {"name":"涛涛不绝", "level":2}
+    if reply_count<=10:
+        ret["level"]=2
+    elif reply_count>10 and reply_count<=100:
+        ret["level"]=3
+    elif reply_count>100 and reply_count<=150:
+        ret["level"]=4
+    elif reply_count>150 and reply_count<=300:
+        ret["level"]=5
+    elif reply_count>300:
+        ret["level"]=6
+    return ret
+
+@Fail2None
+def get_medal_reply_like(reply_max_like):
+    like_num = reply_max_like.get("likeNumber")
+    ret = {"name":"才高八斗", "level":2}
+    if like_num<=30:
+        ret["level"]=2
+    elif like_num>30 and like_num<=300:
+        ret["level"]=3
+    elif like_num>300 and like_num<=1000:
+        ret["level"]=4
+    elif like_num>1000 and like_num<=3000:
+        ret["level"]=5
+    elif like_num>3000:
+        ret["level"]=6
+    return ret
+
+@Fail2None
+def get_medal_reply_copy(reply_max_used):
+    used_num = reply_max_used.get("usedNumber")
+    ret = {"name":"枝江学阀", "level":2}
+    if used_num<=1:
+        ret["level"]=2
+    elif used_num>1 and used_num<=6:
+        ret["level"]=3
+    elif used_num>6 and used_num<=10:
+        ret["level"]=4
+    elif used_num>10 and used_num<=30:
+        ret["level"]=5
+    elif used_num>30:
+        ret["level"]=6
+    return ret
+
+@Fail2None
+def get_medal_perfer_time(reply_prefer_time):
+    prefer_time = reply_prefer_time.get("time")
+    ret = {"name":"", "level":6}
+    if prefer_time=="凌晨" or prefer_time=="上午":
+        ret["name"]="爱在黎明破晓前"
+    elif prefer_time=="下午":
+        ret["name"]="爱在黄昏日落时"
+    else:
+        ret["name"]="爱在午夜降临前"
+    return ret
+
+@Fail2None
+def get_medal_danmu_count(danmu_total):
+    danmu_num = danmu_total.get("danmuNumber")
+    ret = {"name":"爱意绵绵", "level":2}
+    if danmu_num<=100:
+        ret["level"]=2
+    elif danmu_num>100 and danmu_num<=400:
+        ret["level"]=3
+    elif danmu_num>400 and danmu_num<=800:
+        ret["level"]=4
+    elif danmu_num>800 and danmu_num<=1500:
+        ret["level"]=5
+    elif danmu_num>1500:
+        ret["level"]=6
+    return ret
+
+def get_medal(data):
+    medal = []
+    medal.append(get_medal_fans(data.get("danmu_total")))
+    medal.append(get_medal_reply_count(data.get("reply_total")))
+    medal.append(get_medal_reply_like(data.get("reply_max_like")))
+    medal.append(get_medal_reply_copy(data.get("reply_max_used")))
+    medal.append(get_medal_perfer_time(data.get("reply_prefer_time")))
+    medal.append(get_medal_danmu_count(data.get("danmu_total")))
+    medal.append(None)
+    medal = [i for i in medal if i is not None]
+    medal = sorted(medal, key=lambda x:x['level'], reverse=True)
+    return medal
+
 def get_personal_data(mid):
     import time
     start = time.time()
@@ -207,6 +311,8 @@ def get_personal_data(mid):
         "reply_max_send_one_day": get_reply_max_send_one_day(mid),
         "reply_prefer_time": get_reply_prefer_time(mid)
     }
+    medal = get_medal(data)
+    data.update({"medal":medal})
     print(time.time()-start)
     return data
 
