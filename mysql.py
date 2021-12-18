@@ -211,7 +211,7 @@ def get_medal_fans(danmu_total):
 @Fail2None
 def get_medal_reply_count(reply_total):
     reply_count = reply_total.get("replyNumber")
-    ret = {"name":"涛涛不绝", "level":2}
+    ret = {"name":"滔滔不绝", "level":2}
     if reply_count<=10:
         ret["level"]=2
     elif reply_count>10 and reply_count<=100:
