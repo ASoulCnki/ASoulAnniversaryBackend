@@ -202,6 +202,32 @@ fansMap = {
     351609538:"皇珈骑士"
 }
 
+def get_badge_with_level(value, name, base_level, ranges):
+    '''
+    生成徽章，并根据阈值计算徽章等级
+    value      实际值
+    name       徽章名称
+    base_level 基础等级
+    ranges     徽章等级阈值
+    '''
+    if not value:
+        return {
+            "name": name,
+            "level": base_level,
+        }
+
+    range_length = len(ranges)
+
+    for index, range in enumerate(ranges):
+        if value > range:
+            base_level += 1
+            if range_length > index + 1:
+                continue
+        return {
+            "name": name,
+            "level": base_level
+        }
+
 @Fail2None
 def get_medal_fans(danmu_total):
     global fansMap
@@ -211,50 +237,17 @@ def get_medal_fans(danmu_total):
 @Fail2None
 def get_medal_reply_count(reply_total):
     reply_count = reply_total.get("replyNumber")
-    ret = {"name":"滔滔不绝", "level":2}
-    if reply_count<=10:
-        ret["level"]=2
-    elif reply_count>10 and reply_count<=100:
-        ret["level"]=3
-    elif reply_count>100 and reply_count<=150:
-        ret["level"]=4
-    elif reply_count>150 and reply_count<=300:
-        ret["level"]=5
-    elif reply_count>300:
-        ret["level"]=6
-    return ret
+    return get_badge_with_level(reply_count, "滔滔不绝", 2, [10, 100, 150, 300])
 
 @Fail2None
 def get_medal_reply_like(reply_max_like):
     like_num = reply_max_like.get("likeNumber")
-    ret = {"name":"才高八斗", "level":2}
-    if like_num<=30:
-        ret["level"]=2
-    elif like_num>30 and like_num<=300:
-        ret["level"]=3
-    elif like_num>300 and like_num<=1000:
-        ret["level"]=4
-    elif like_num>1000 and like_num<=3000:
-        ret["level"]=5
-    elif like_num>3000:
-        ret["level"]=6
-    return ret
+    return get_badge_with_level(like_num, "才高八斗", 1, [30, 300, 1000, 3000])
 
 @Fail2None
 def get_medal_reply_copy(reply_max_used):
     used_num = reply_max_used.get("usedNumber")
-    ret = {"name":"枝江学阀", "level":2}
-    if used_num<=1:
-        ret["level"]=2
-    elif used_num>1 and used_num<=6:
-        ret["level"]=3
-    elif used_num>6 and used_num<=10:
-        ret["level"]=4
-    elif used_num>10 and used_num<=30:
-        ret["level"]=5
-    elif used_num>30:
-        ret["level"]=6
-    return ret
+    return get_badge_with_level(used_num, "枝江学阀", 2, [1, 6, 10, 30])
 
 @Fail2None
 def get_medal_perfer_time(reply_prefer_time):
@@ -271,18 +264,7 @@ def get_medal_perfer_time(reply_prefer_time):
 @Fail2None
 def get_medal_danmu_count(danmu_total):
     danmu_num = danmu_total.get("danmuNumber")
-    ret = {"name":"爱意绵绵", "level":2}
-    if danmu_num<=100:
-        ret["level"]=2
-    elif danmu_num>100 and danmu_num<=400:
-        ret["level"]=3
-    elif danmu_num>400 and danmu_num<=800:
-        ret["level"]=4
-    elif danmu_num>800 and danmu_num<=1500:
-        ret["level"]=5
-    elif danmu_num>1500:
-        ret["level"]=6
-    return ret
+    return get_badge_with_level(danmu_num, '爱意绵绵', 2, [100, 400, 800, 1500])
 
 def get_medal(data):
     medal = []
