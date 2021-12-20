@@ -242,7 +242,7 @@ def get_medal_reply_count(reply_total):
 @Fail2None
 def get_medal_reply_like(reply_max_like):
     like_num = reply_max_like.get("likeNumber")
-    return get_badge_with_level(like_num, "才高八斗", 1, [30, 300, 1000, 3000])
+    return get_badge_with_level(like_num, "才高八斗", 2, [30, 300, 1000, 3000])
 
 @Fail2None
 def get_medal_reply_copy(reply_max_used):
