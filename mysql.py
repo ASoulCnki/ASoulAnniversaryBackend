@@ -250,7 +250,7 @@ def get_medal_reply_copy(reply_max_used):
     return get_badge_with_level(used_num, "枝江学阀", 2, [1, 6, 10, 30])
 
 @Fail2None
-def get_medal_perfer_time(reply_prefer_time):
+def get_medal_prefer_time(reply_prefer_time):
     prefer_time = reply_prefer_time.get("time")
     ret = {"name":"", "level":6}
     if prefer_time=="凌晨" or prefer_time=="上午":
@@ -272,7 +272,7 @@ def get_medal(data):
     medal.append(get_medal_reply_count(data.get("reply_total")))
     medal.append(get_medal_reply_like(data.get("reply_max_like")))
     medal.append(get_medal_reply_copy(data.get("reply_max_used")))
-    medal.append(get_medal_perfer_time(data.get("reply_prefer_time")))
+    medal.append(get_medal_prefer_time(data.get("reply_prefer_time")))
     medal.append(get_medal_danmu_count(data.get("danmu_total")))
     medal.append(None)
     medal = [i for i in medal if i is not None]
