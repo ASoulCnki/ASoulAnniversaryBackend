@@ -266,6 +266,24 @@ def get_medal_danmu_count(danmu_total):
     danmu_num = danmu_total.get("danmuNumber")
     return get_badge_with_level(danmu_num, '爱意绵绵', 2, [100, 400, 800, 1500])
 
+@Fail2None
+def get_username_and_follow_time(mid):
+    # 获取用户名数据
+    table = "username"
+    elements = "`name`, `ava`, `bella`, `carol`, `diana`, `eileen`, `asoul_official`"
+    ele_num = 7
+    ans = query_data_by_mid(table, elements, ele_num, mid)
+    return {
+        "username": ans[0],
+        "672346917": ans[1],
+        "672353429": ans[2],
+        "351609538": ans[3],
+        "672328094": ans[4],
+        "672342685": ans[5],
+        "703007996": ans[6]
+    }
+
+
 def get_medal(data):
     medal = []
     medal.append(get_medal_fans(data.get("danmu_total")))
@@ -283,6 +301,7 @@ def get_personal_data(mid):
     import time
     start = time.time()
     data = {
+        "user_data": get_username_and_follow_time(mid),
         "all": get_all(),
         "reply_first": get_reply_first(mid),
         "reply_total": get_reply_total(mid),
